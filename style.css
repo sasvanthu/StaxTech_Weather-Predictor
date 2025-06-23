@@ -1,89 +1,153 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #74ebd5, #9face6); /* Example gradient */
+    background: linear-gradient(to right, #74ebd5, #9face6); /* Soft blue-green gradient */
     color: #333;
     margin: 0;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .weather-container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     text-align: center;
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
+    border: 1px solid rgba(255, 255, 255, 0.6); /* Subtle border */
 }
 
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: #2c3e50;
+    font-size: 2.2em;
+    font-weight: 600;
 }
 
 .search-box {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     display: flex;
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 #city-input {
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    flex-grow: 1; /* Allow input to take available space */
-    min-width: 150px;
+    border-radius: 8px;
+    flex-grow: 1;
+    min-width: 180px;
+    font-size: 1em;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 button {
-    padding: 10px 15px;
+    padding: 12px 20px;
     background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
     background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .weather-display {
-    margin-top: 20px;
+    margin-top: 25px;
+    background-color: rgba(240, 240, 240, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 #temperature {
-    font-size: 3em;
+    font-size: 3.5em;
     margin: 10px 0;
     color: #e74c3c;
+    font-weight: 700;
+    letter-spacing: -1px;
 }
 
-#location, #description, #humidity, #wind-speed {
+#location {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: #34495e;
+    font-weight: 600;
+}
+
+#description, #humidity, #wind-speed, #min-max-temp {
     font-size: 1.2em;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #555;
 }
 
 #weather-icon {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     vertical-align: middle;
-    margin-right: 10px;
+    margin-right: 15px;
+    display: inline-block; /* Ensure it's treated as a block for hidden class */
+}
+
+.hidden {
+    display: none !important; /* Hide the icon when not available */
 }
 
 .main-weather-info {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 15px;
 }
 
 .error {
-    color: #e74c3c;
-    margin-top: 15px;
+    color: #c0392b;
+    margin-top: 20px;
     font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .weather-container {
+        padding: 25px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    #temperature {
+        font-size: 3em;
+    }
+    #location {
+        font-size: 1.5em;
+    }
+    #weather-icon {
+        width: 70px;
+        height: 70px;
+    }
+    .search-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #city-input, button {
+        width: 100%;
+        max-width: none;
+    }
 }
