@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Weather App (No API Key)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,12 +17,13 @@
         <div class="weather-display">
             <h2 id="location"></h2>
             <div class="main-weather-info">
-                <img id="weather-icon" src="" alt="Weather Icon">
+                <img id="weather-icon" src="" alt="Weather Icon" class="hidden">
                 <p id="temperature"></p>
             </div>
             <p id="description"></p>
             <p id="humidity"></p>
             <p id="wind-speed"></p>
+            <p id="min-max-temp"></p>
         </div>
         <p id="error-message" class="error"></p>
     </div>
