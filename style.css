@@ -4,150 +4,158 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #74ebd5, #9face6); /* Soft blue-green gradient */
+    background: linear-gradient(to right, #6a11cb, #2575fc); /* Deep purple to blue gradient */
     color: #333;
     margin: 0;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.weather-container {
-    background-color: rgba(255, 255, 255, 0.95);
+.container {
+    background-color: #ffffff;
     padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     text-align: center;
     width: 90%;
-    max-width: 450px;
-    border: 1px solid rgba(255, 255, 255, 0.6); /* Subtle border */
+    max-width: 500px;
 }
 
 h1 {
-    margin-bottom: 25px;
-    color: #2c3e50;
+    color: #333;
+    margin-bottom: 30px;
     font-size: 2.2em;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.search-box {
-    margin-bottom: 25px;
+.input-group, .checkbox-group {
+    margin-bottom: 20px;
+    text-align: left;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
 }
 
-#city-input {
-    padding: 12px;
+label {
+    font-size: 1.1em;
+    color: #555;
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+input[type="number"] {
+    width: 80px;
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    flex-grow: 1;
-    min-width: 180px;
+    border-radius: 6px;
     font-size: 1em;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.4); /* Make checkboxes larger */
+    margin-right: 5px;
 }
 
 button {
-    padding: 12px 20px;
-    background-color: #3498db;
+    padding: 12px 25px;
+    background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1em;
-    font-weight: 500;
+    font-size: 1.1em;
+    font-weight: 600;
     transition: background-color 0.3s ease, transform 0.1s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    margin-top: 15px;
+    width: 100%;
 }
 
 button:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
+    background-color: #0056b3;
+    transform: translateY(-2px);
 }
 
 button:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
 }
 
-.weather-display {
-    margin-top: 25px;
-    background-color: rgba(240, 240, 240, 0.7);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
-}
-
-#temperature {
-    font-size: 3.5em;
-    margin: 10px 0;
-    color: #e74c3c;
-    font-weight: 700;
-    letter-spacing: -1px;
-}
-
-#location {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    color: #34495e;
-    font-weight: 600;
-}
-
-#description, #humidity, #wind-speed, #min-max-temp {
-    font-size: 1.2em;
-    margin-bottom: 8px;
-    color: #555;
-}
-
-#weather-icon {
-    width: 90px;
-    height: 90px;
-    vertical-align: middle;
-    margin-right: 15px;
-    display: inline-block; /* Ensure it's treated as a block for hidden class */
-}
-
-.hidden {
-    display: none !important; /* Hide the icon when not available */
-}
-
-.main-weather-info {
+.password-display-group {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.error {
-    color: #c0392b;
+#generated-password {
+    flex-grow: 1;
+    padding: 12px;
+    font-size: 1.2em;
+    border: none;
+    outline: none;
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Consolas', 'Monaco', monospace; /* Monospace font for password */
+    white-space: nowrap; /* Prevent line breaks */
+    overflow-x: auto; /* Enable horizontal scrolling if password is too long */
+}
+
+#copy-btn {
+    flex-shrink: 0;
+    padding: 12px 20px;
+    background-color: #28a745; /* Green for copy button */
+    border-radius: 0 6px 6px 0; /* Rounded only on right */
+    width: auto; /* Override 100% width */
+}
+
+#copy-btn:hover {
+    background-color: #218838;
+}
+
+.message {
     margin-top: 20px;
+    font-size: 0.95em;
+    color: #888;
+}
+
+/* Specific styling for error/success messages */
+.message.error {
+    color: #dc3545; /* Red for errors */
     font-weight: bold;
-    font-size: 1.1em;
+}
+
+.message.success {
+    color: #28a745; /* Green for success */
+    font-weight: bold;
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
-    .weather-container {
+@media (max-width: 480px) {
+    .container {
         padding: 25px;
     }
     h1 {
         font-size: 1.8em;
     }
-    #temperature {
-        font-size: 3em;
-    }
-    #location {
-        font-size: 1.5em;
-    }
-    #weather-icon {
-        width: 70px;
-        height: 70px;
-    }
-    .search-box {
+    .input-group, .checkbox-group {
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-start;
+        gap: 5px;
     }
-    #city-input, button {
+    input[type="number"] {
         width: 100%;
-        max-width: none;
+        text-align: left;
+    }
+    .password-display-group {
+        flex-direction: column;
+        border-radius: 8px;
+    }
+    #copy-btn {
+        width: 100%;
+        border-radius: 6px;
+        margin-top: 10px; /* Add margin when stacked */
     }
 }
