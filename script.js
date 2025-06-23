@@ -1,158 +1,135 @@
-const searchBtn = document.getElementById('search-btn');
-const currentLocationBtn = document.getElementById('current-location-btn');
-const cityInput = document.getElementById('city-input');
-const locationDisplay = document.getElementById('location');
-const temperatureDisplay = document.getElementById('temperature');
-const descriptionDisplay = document.getElementById('description');
-const humidityDisplay = document.getElementById('humidity');
-const windSpeedDisplay = document.getElementById('wind-speed');
-const minMaxTempDisplay = document.getElementById('min-max-temp'); // New element
-const weatherIcon = document.getElementById('weather-icon');
-const errorMessage = document.getElementById('error-message');
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordLengthInput = document.getElementById('password-length');
+    const includeUppercaseCheckbox = document.getElementById('include-uppercase');
+    const includeLowercaseCheckbox = document.getElementById('include-lowercase');
+    const includeNumbersCheckbox = document.getElementById('include-numbers');
+    const includeSpecialCheckbox = document.getElementById('include-special');
+    const generateBtn = document.getElementById('generate-btn');
+    const generatedPasswordInput = document.getElementById('generated-password');
+    const copyBtn = document.getElementById('copy-btn');
+    const messageDisplay = document.getElementById('message');
 
-// Function to fetch weather data
-async function fetchWeatherData(cityOrCoords) {
-    let geoApiUrl;
-    let weatherApiUrl;
-    let cityName = ''; // To store the city name for display
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const numberChars = '0123456789';
+    const specialChars = '!@#$%^&*()_-+=[]{};:,.<>?';
 
-    clearWeatherDisplay(); // Clear previous data
-    errorMessage.textContent = 'Loading...'; // Show loading message
+    generateBtn.addEventListener('click', generatePassword);
+    copyBtn.addEventListener('click', copyToClipboard);
 
-    try {
-        if (typeof cityOrCoords === 'string') { // If it's a city name, use Nominatim for geocoding
-            cityName = cityOrCoords;
-            // Nominatim (OpenStreetMap) for geocoding. Check their usage policy for higher volumes.
-            geoApiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityOrCoords)}&format=json&limit=1`;
-            const geoResponse = await fetch(geoApiUrl);
-            if (!geoResponse.ok) {
-                throw new Error(`HTTP error! status: ${geoResponse.status}`);
-            }
-            const geoData = await geoResponse.json();
+    // Initial generation on page load for a default password
+    generatePassword();
 
-            if (!geoData || geoData.length === 0) {
-                errorMessage.textContent = 'City not found. Please check the spelling or try another location.';
-                return;
-            }
-            const { lat, lon, display_name } = geoData[0];
-            // Nominatim's display_name can be very long; simplify for location display
-            const parts = display_name.split(', ');
-            cityName = parts[0] + (parts[parts.length - 1] ? `, ${parts[parts.length - 1]}` : ''); // e.g., "Chennai, India"
+    function generatePassword() {
+        const length = parseInt(passwordLengthInput.value);
+        const includeUppercase = includeUppercaseCheckbox.checked;
+        const includeLowercase = includeLowercaseCheckbox.checked;
+        const includeNumbers = includeNumbersCheckbox.checked;
+        const includeSpecial = includeSpecialCheckbox.checked;
 
-            // Open-Meteo API URL
-            weatherApiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=celsius&windspeed_unit=ms&timezone=auto&daily=weathercode,temperature_2m_max,temperature_2m_min`;
+        let availableChars = '';
+        let generatedPassword = '';
+        let guaranteedChars = []; // To ensure at least one of each selected type is included
 
-        } else { // If it's coordinates (from Geolocation API)
-            const { latitude, longitude } = cityOrCoords;
-            // Use Nominatim's reverse geocoding to get a city name from coordinates
-            geoApiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
-            const geoResponse = await fetch(geoApiUrl);
-            if (!geoResponse.ok) {
-                throw new Error(`HTTP error! status: ${geoResponse.status}`);
-            }
-            const geoData = await geoResponse.json();
-            if (geoData && geoData.address) {
-                cityName = geoData.address.city || geoData.address.town || geoData.address.village || 'Unknown Location';
-                if (geoData.address.country) {
-                    cityName += `, ${geoData.address.country}`;
-                }
+        if (includeUppercase) {
+            availableChars += uppercaseChars;
+            guaranteedChars.push(getRandomChar(uppercaseChars));
+        }
+        if (includeLowercase) {
+            availableChars += lowercaseChars;
+            guaranteedChars.push(getRandomChar(lowercaseChars));
+        }
+        if (includeNumbers) {
+            availableChars += numberChars;
+            guaranteedChars.push(getRandomChar(numberChars));
+        }
+        if (includeSpecial) {
+            availableChars += specialChars;
+            guaranteedChars.push(getRandomChar(specialChars));
+        }
+
+        if (availableChars === '') {
+            showMessage('Please select at least one character type!', 'error');
+            generatedPasswordInput.value = '';
+            return;
+        }
+        if (length < guaranteedChars.length) {
+            showMessage(`Password length must be at least ${guaranteedChars.length} for selected options.`, 'error');
+            generatedPasswordInput.value = '';
+            return;
+        }
+
+        // Add guaranteed characters first
+        generatedPassword = guaranteedChars.join('');
+
+        // Fill the rest of the password length with random characters from all selected types
+        for (let i = generatedPassword.length; i < length; i++) {
+            generatedPassword += getRandomChar(availableChars);
+        }
+
+        // Shuffle the generated password to ensure randomness of guaranteed characters' positions
+        generatedPassword = shuffleString(generatedPassword);
+
+        generatedPasswordInput.value = generatedPassword;
+        showMessage('Password generated!', 'success');
+    }
+
+    function getRandomChar(charSet) {
+        const randomIndex = Math.floor(Math.random() * charSet.length);
+        return charSet[randomIndex];
+    }
+
+    function shuffleString(str) {
+        const array = str.split('');
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        }
+        return array.join('');
+    }
+
+    function copyToClipboard() {
+        if (generatedPasswordInput.value) {
+            // Use modern Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(generatedPasswordInput.value)
+                    .then(() => {
+                        showMessage('Password copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        fallbackCopyToClipboard(); // Fallback if modern API fails
+                    });
             } else {
-                cityName = 'Current Location'; // Fallback
+                // Fallback for older browsers
+                fallbackCopyToClipboard();
             }
-
-            // Open-Meteo API URL
-            weatherApiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=celsius&windspeed_unit=ms&timezone=auto&daily=weathercode,temperature_2m_max,temperature_2m_min`;
-        }
-
-        const weatherResponse = await fetch(weatherApiUrl);
-        if (!weatherResponse.ok) {
-            throw new Error(`HTTP error! status: ${weatherResponse.status}`);
-        }
-        const weatherData = await weatherResponse.json();
-
-        if (weatherData && weatherData.current_weather) {
-            displayWeather(weatherData, cityName);
-            errorMessage.textContent = ''; // Clear error message on success
         } else {
-            errorMessage.textContent = weatherData.reason || 'Could not fetch weather data for this location.';
-            clearWeatherDisplay();
+            showMessage('No password to copy!', 'error');
         }
-
-    } catch (error) {
-        errorMessage.textContent = 'Failed to fetch weather data. Please try again later.';
-        console.error('Error fetching weather data:', error);
-        clearWeatherDisplay();
-    }
-}
-
-// Function to display weather data from Open-Meteo
-function displayWeather(data, cityName) {
-    const { current_weather, daily } = data;
-
-    locationDisplay.textContent = cityName;
-    temperatureDisplay.textContent = `${Math.round(current_weather.temperature)}°C`;
-    windSpeedDisplay.textContent = `Wind Speed: ${current_weather.windspeed} m/s`;
-
-    // Humidity is not directly available in current_weather for Open-Meteo's free tier.
-    // We'll indicate it's not available or remove it if you prefer.
-    humidityDisplay.textContent = `Humidity: N/A`;
-
-    // Daily min/max temperature from the 'daily' object for today (index 0)
-    if (daily && daily.temperature_2m_max && daily.temperature_2m_min) {
-        const todayMax = Math.round(daily.temperature_2m_max[0]);
-        const todayMin = Math.round(daily.temperature_2m_min[0]);
-        minMaxTempDisplay.textContent = `Min/Max: ${todayMin}°C / ${todayMax}°C`;
-    } else {
-        minMaxTempDisplay.textContent = ''; // Clear if not available
     }
 
+    function fallbackCopyToClipboard() {
+        generatedPasswordInput.select(); // Select the text field
+        generatedPasswordInput.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand('copy'); // Copy the text inside the text field
+        showMessage('Password copied to clipboard (fallback)!', 'success');
+    }
 
-    const weatherCode = current_weather.weathercode;
-    const description = getWeatherDescription(weatherCode);
-    descriptionDisplay.textContent = description;
+    function showMessage(msg, type) {
+        messageDisplay.textContent = msg;
+        messageDisplay.className = 'message ' + type; // Set class for styling
+        setTimeout(() => {
+            messageDisplay.textContent = '';
+            messageDisplay.className = 'message';
+        }, 3000); // Clear message after 3 seconds
+    }
 
-    // Set weather icon
-    weatherIcon.src = getOpenMeteoWeatherIcon(weatherCode);
-    weatherIcon.alt = description;
-    weatherIcon.classList.remove('hidden'); // Show the icon
-}
-
-// Function to clear weather display
-function clearWeatherDisplay() {
-    locationDisplay.textContent = '';
-    temperatureDisplay.textContent = '';
-    descriptionDisplay.textContent = '';
-    humidityDisplay.textContent = '';
-    windSpeedDisplay.textContent = '';
-    minMaxTempDisplay.textContent = '';
-    weatherIcon.src = '';
-    weatherIcon.alt = '';
-    weatherIcon.classList.add('hidden'); // Hide the icon
-    errorMessage.textContent = '';
-}
-
-// Helper function to map Open-Meteo weather codes to descriptions
-// (Based on WMO Weather interpretation codes (WWMO) - see Open-Meteo docs)
-function getWeatherDescription(code) {
-    switch (code) {
-        case 0: return 'Clear sky';
-        case 1: return 'Mainly clear';
-        case 2: return 'Partly cloudy';
-        case 3: return 'Overcast';
-        case 45: return 'Fog';
-        case 48: return 'Depositing rime fog';
-        case 51: return 'Drizzle: Light';
-        case 53: return 'Drizzle: Moderate';
-        case 55: return 'Drizzle: Dense intensity';
-        case 56: return 'Freezing Drizzle: Light';
-        case 57: return 'Freezing Drizzle: Dense intensity';
-        case 61: return 'Rain: Slight';
-        case 63: return 'Rain: Moderate';
-        case 65: return 'Rain: Heavy intensity';
-        case 66: return 'Freezing Rain: Light';
-        case 67: return 'Freezing Rain: Heavy intensity';
-        case 71: return 'Snow fall: Slight';
-        case 73: return 'Snow fall: Moderate';
-        case 75: return 'Snow fall: Heavy intensity';
-        case 77: return 'Snow grains';
-        case 80: return
+    // Add event listener to checkboxes and length input to regenerate password
+    // This provides a more dynamic experience
+    passwordLengthInput.addEventListener('input', generatePassword);
+    includeUppercaseCheckbox.addEventListener('change', generatePassword);
+    includeLowercaseCheckbox.addEventListener('change', generatePassword);
+    includeNumbersCheckbox.addEventListener('change', generatePassword);
+    includeSpecialCheckbox.addEventListener('change', generatePassword);
+});
