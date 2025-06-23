@@ -3,30 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App (No API Key)</title>
+    <title>Password Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="weather-container">
-        <h1>Weather App</h1>
-        <div class="search-box">
-            <input type="text" id="city-input" placeholder="Enter city name">
-            <button id="search-btn">Search</button>
-            <button id="current-location-btn">Use Current Location</button>
+    <div class="container">
+        <h1>Password Generator</h1>
+
+        <div class="input-group">
+            <label for="password-length">Password Length:</label>
+            <input type="number" id="password-length" min="4" max="50" value="12">
         </div>
-        <div class="weather-display">
-            <h2 id="location"></h2>
-            <div class="main-weather-info">
-                <img id="weather-icon" src="" alt="Weather Icon" class="hidden">
-                <p id="temperature"></p>
-            </div>
-            <p id="description"></p>
-            <p id="humidity"></p>
-            <p id="wind-speed"></p>
-            <p id="min-max-temp"></p>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="include-uppercase" checked>
+            <label for="include-uppercase">Include Uppercase Letters (A-Z)</label>
         </div>
-        <p id="error-message" class="error"></p>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="include-lowercase" checked>
+            <label for="include-lowercase">Include Lowercase Letters (a-z)</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="include-numbers" checked>
+            <label for="include-numbers">Include Numbers (0-9)</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="include-special" checked>
+            <label for="include-special">Include Special Characters (!@#$%^&*)</label>
+        </div>
+
+        <button id="generate-btn">Generate Password</button>
+
+        <div class="password-display-group">
+            <input type="text" id="generated-password" readonly placeholder="Your password will appear here">
+            <button id="copy-btn">Copy</button>
+        </div>
+
+        <p id="message" class="message"></p>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
